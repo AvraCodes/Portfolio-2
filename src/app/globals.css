@@ -20,6 +20,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Background Grid */
+.bg-grid {
+  background-size: 5vw 5vw;
+  background-image: 
+    linear-gradient(to right, rgba(245, 240, 235, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245, 240, 235, 0.05) 1px, transparent 1px);
+}
+
 /* Custom Scrollbar for Neo-Brutalism */
 ::-webkit-scrollbar {
   width: 10px;
