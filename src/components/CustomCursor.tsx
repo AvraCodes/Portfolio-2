@@ -5,12 +5,10 @@ import gsap from "gsap";
 
 export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const cursor = cursorRef.current;
-    const text = textRef.current;
-    if (!cursor || !text) return;
+    if (!cursor) return;
 
     // Set initial position off-screen
     gsap.set(cursor, { xPercent: -50, yPercent: -50, opacity: 0 });
@@ -25,45 +23,25 @@ export default function CustomCursor() {
       });
     };
 
-    const handleHoverEnter = (e: Event) => {
-      const target = e.currentTarget as HTMLElement;
-      const cursorText = target.getAttribute("data-cursor-text");
-
-      if (cursorText) {
-        text.innerText = cursorText;
-        gsap.to(cursor, {
-          scale: 6,
-          backgroundColor: "var(--color-foreground)",
-          duration: 0.5,
-          ease: "power4.out",
-        });
-        gsap.to(text, {
-          opacity: 1,
-          duration: 0.3,
-          delay: 0.1,
-        });
-      } else {
-        gsap.to(cursor, {
-          scale: 1,
-          backgroundColor: "var(--color-foreground)",
-          duration: 0.5,
-          ease: "power4.out",
-        });
-      }
+    const handleHoverEnter = () => {
+      gsap.to(cursor, {
+        width: 40,
+        height: 40,
+        backgroundColor: "transparent",
+        border: "1px solid var(--accent)",
+        duration: 0.3,
+        ease: "power2.out",
+      });
     };
 
     const handleHoverLeave = () => {
-      gsap.to(text, {
-        opacity: 0,
-        duration: 0.2,
-      });
-      text.innerText = "";
-      
       gsap.to(cursor, {
-        scale: 0.5,
-        backgroundColor: "var(--color-foreground)",
-        duration: 0.5,
-        ease: "power4.out",
+        width: 8,
+        height: 8,
+        backgroundColor: "var(--accent)",
+        border: "none",
+        duration: 0.3,
+        ease: "power2.out",
       });
     };
 
@@ -72,7 +50,7 @@ export default function CustomCursor() {
     // Function to attach listeners
     const attachListeners = () => {
       const interactiveElements = document.querySelectorAll(
-        "a, button, input, textarea, [data-cursor='hover'], [data-cursor-text]"
+        "a, button, input, textarea, [data-cursor='hover']"
       );
       interactiveElements.forEach((el) => {
         el.addEventListener("mouseenter", handleHoverEnter);
@@ -95,14 +73,8 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 w-2 h-2 bg-foreground rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:flex items-center justify-center transition-opacity"
-      style={{ willChange: "transform", opacity: 0.5 }}
-    >
-      <span 
-        ref={textRef} 
-        className="text-[3px] font-sans font-medium text-background opacity-0 text-center uppercase tracking-[0.2em] whitespace-nowrap"
-        style={{ transform: "scale(0.3)" }}
-      ></span>
-    </div>
+      className="fixed top-0 left-0 w-2 h-2 bg-accent rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:block"
+      style={{ willChange: "transform, width, height" }}
+    />
   );
 }

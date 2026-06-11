@@ -1,46 +1,80 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #000000;
-  --color-accent: #000000; /* Pure stark contrast */
+  --color-background: #0d0d0d;
+  --color-foreground: #f5f0eb;
+  --color-accent: #c8ff00;
   
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: 'Neue Montreal', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Editorial New', ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --background: #0d0d0d;
+  --foreground: #f5f0eb;
+  --accent: #c8ff00;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   overflow-x: hidden;
+  font-feature-settings: "kern" 1, "liga" 1;
 }
 
-/* Hidden Scrollbar for pure minimal look */
+/* Hidden Scrollbar */
 ::-webkit-scrollbar {
   display: none;
 }
 body {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Image Reveal Hover Utility */
-.hover-reveal-img {
-  position: fixed;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 50;
-  transform: translate(-50%, -50%) scale(0.8);
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity;
-  filter: grayscale(100%) contrast(1.2);
+/* Strict 12-Column Grid Utility */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 1.5rem; /* Standard gutter */
 }
-.hover-reveal-text:hover ~ .hover-reveal-img {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+
+/* Clip-path Link Hover (Editorial Underline Replacement) */
+.clip-link {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.1;
+  text-decoration: none;
+}
+.clip-link::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: var(--accent);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.clip-link span {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.clip-link:hover span {
+  transform: translateY(-100%);
+}
+.clip-link:hover::after {
+  transform: translateY(-100%);
+}
+
+/* Screen Invert Utility */
+.invert-screen {
+  filter: invert(1);
+  background-color: #f5f0eb; /* Opposite of 0d0d0d */
+}
+
+/* Base selection */
+::selection {
+  background-color: var(--accent);
+  color: #000;
 }

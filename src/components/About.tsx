@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "./SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,56 +14,85 @@ export default function About() {
   useEffect(() => {
     if (!sectionRef.current || !textRef.current) return;
 
-    const words = textRef.current.querySelectorAll('.word');
-    
+    const chars = textRef.current.querySelectorAll('.char');
+    const facts = sectionRef.current.querySelectorAll('.fact-reveal');
+
+    // Text scramble / reveal effect for manifesto
     gsap.fromTo(
-      words,
-      { y: 50, opacity: 0 },
+      chars,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.1,
+        stagger: 0.01,
+        ease: "none",
+        scrollTrigger: {
+          trigger: textRef.current,
+          start: "top 80%",
+        }
+      }
+    );
+
+    // Fade up for education facts
+    gsap.fromTo(
+      facts,
+      { y: 20, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 1.5,
-        ease: "power4.out",
-        stagger: 0.05,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.2,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 75%",
+          start: "top 60%",
         }
       }
     );
   }, []);
 
-  const text = "Backend is where I live. Frontend is where I make things feel alive. Machine Learning is the invisible gap between the two.";
-  const words = text.split(" ");
+  const manifestoText = "Backend is where I live. Frontend is where I make things feel alive. ML is the gap I close between the two. I co-founded an agency. I also compete on Kaggle. Neither surprises me.";
 
   return (
-    <section 
-      ref={sectionRef}
-      className="w-full min-h-[80vh] flex flex-col justify-center px-4 md:px-16 py-32 bg-background border-t border-foreground/10"
-    >
-      <div className="max-w-[90vw] mx-auto flex flex-col md:flex-row gap-16 md:gap-32 items-start">
+    <section ref={sectionRef} id="about" className="w-full min-h-screen py-32 px-4 md:px-8 bg-background flex flex-col justify-center">
+      <div className="grid-12 items-start">
         
-        {/* Abstract Data Definition */}
-        <div className="w-full md:w-1/4 font-sans text-xs uppercase tracking-[0.2em] font-medium leading-loose pt-4">
-          The Manifesto <br/>
-          <span className="text-foreground/40 mt-4 block">
-            A precise balance between architectural logic and aesthetic compulsion. Vol. 01.
-          </span>
+        {/* Left Column - Manifesto */}
+        <div className="col-span-12 md:col-span-5 mb-16 md:mb-0">
+          <div className="font-sans text-[11px] uppercase tracking-[0.2em] mb-12 text-foreground/70">
+            — 02 / MANIFESTO
+          </div>
+          <div 
+            ref={textRef}
+            className="font-display text-[32px] md:text-[40px] leading-[1.1] font-light"
+          >
+            <SplitText text={manifestoText} />
+          </div>
         </div>
 
-        {/* Massive Drop Cap Text */}
-        <div 
-          ref={textRef} 
-          className="w-full md:w-3/4 font-display text-5xl md:text-7xl lg:text-[7vw] leading-[0.85] tracking-tighter"
-        >
-          {words.map((word, i) => (
-            <span key={i} className="word inline-block mr-3 md:mr-6 pb-2">
-              {i === 0 ? (
-                <span className="float-left text-[20vw] leading-[0.6] pr-4 mt-2 italic">{word[0]}</span>
-              ) : null}
-              {i === 0 ? word.slice(1) : word}
+        {/* Right Column - Education Facts */}
+        <div className="col-span-12 md:col-span-6 md:col-start-7 flex flex-col justify-end h-full mt-16 md:mt-32">
+          
+          {/* Fact 1 */}
+          <div className="fact-reveal border-b border-foreground/20 pb-4 mb-4 flex flex-col">
+            <span className="font-sans text-[13px] font-semibold tracking-wide mb-1">
+              B.S. DATA SCIENCE
             </span>
-          ))}
+            <span className="font-sans text-[11px] font-light text-foreground/60 tracking-wider uppercase">
+              IIT Madras online programme, 2027
+            </span>
+          </div>
+
+          {/* Fact 2 */}
+          <div className="fact-reveal border-b border-foreground/20 pb-4 flex flex-col">
+            <span className="font-sans text-[13px] font-semibold tracking-wide mb-1">
+              B.TECH INFORMATION TECHNOLOGY
+            </span>
+            <span className="font-sans text-[11px] font-light text-foreground/60 tracking-wider uppercase">
+              University of Kalyani, 2027
+            </span>
+          </div>
+
         </div>
 
       </div>
