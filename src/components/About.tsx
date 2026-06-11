@@ -8,124 +8,80 @@ import Image from "next/image";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
-  const containerRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const bgTextRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!textRef.current || !containerRef.current || !bgTextRef.current || !imgRef.current) return;
+    if (!sectionRef.current || !imgRef.current || !textRef.current) return;
 
-    // Scrub reveal text based on scroll position
-    gsap.fromTo(
-      textRef.current,
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1,
-        y: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          end: "top 40%",
-          scrub: true,
-        },
-      }
-    );
-
-    // Parallax background text
-    gsap.to(bgTextRef.current, {
-      y: -200,
-      ease: "none",
+    const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: true,
-      },
+        trigger: sectionRef.current,
+        start: "top 70%",
+      }
     });
 
-    // Image reveal
-    gsap.fromTo(
+    tl.fromTo(
       imgRef.current,
-      { clipPath: "inset(100% 0 0 0)" },
-      {
-        clipPath: "inset(0% 0 0 0)",
-        duration: 1.5,
-        ease: "expo.out",
-        scrollTrigger: {
-          trigger: imgRef.current,
-          start: "top 80%",
-        },
-      }
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }
+    ).fromTo(
+      textRef.current.children,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.2, ease: "power3.out", stagger: 0.2 },
+      "-=1"
     );
+
   }, []);
 
   return (
     <section 
-      ref={containerRef}
-      className="relative w-full min-h-[90vh] flex flex-col md:flex-row border-b border-foreground overflow-hidden"
+      ref={sectionRef}
+      className="w-full py-32 md:py-48 px-8 md:px-16 flex flex-col md:flex-row items-center justify-center gap-16 md:gap-32 bg-background"
     >
-      {/* Massive Background Outline Text */}
-      <div 
-        ref={bgTextRef}
-        className="absolute top-1/4 left-0 w-full pointer-events-none select-none z-0 opacity-10"
-      >
-        <span className="font-display text-[25vw] leading-none text-transparent brutal-border-text stroke-foreground whitespace-nowrap overflow-hidden block">
-          MANIFESTO MANIFESTO
-        </span>
-      </div>
-
-      <style jsx>{`
-        .brutal-border-text {
-          -webkit-text-stroke: 1px var(--foreground);
-        }
-      `}</style>
-
-      {/* Left Column: Image and Education */}
-      <div className="w-full md:w-[45%] p-8 md:p-16 border-b md:border-b-0 md:border-r border-foreground flex flex-col justify-between relative z-10 bg-background/80 backdrop-blur-sm">
-        <div>
-          <h2 className="text-sm font-sans uppercase tracking-[0.2em] mb-12">
-            [02] Core Logic
-          </h2>
-          <div ref={imgRef} className="w-full aspect-[4/5] relative bg-foreground/10 brutal-border overflow-hidden grayscale contrast-150 mix-blend-luminosity">
-            <Image 
-              src="/images/manifesto.png" 
-              alt="Architectural structure representing systems" 
-              fill 
-              className="object-cover"
-            />
-            {/* Duotone Overlay */}
-            <div className="absolute inset-0 bg-accent mix-blend-multiply opacity-50"></div>
-          </div>
-        </div>
-
-        <div className="mt-16 space-y-8 border-t border-foreground pt-8">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-xs font-sans uppercase tracking-[0.2em] text-gray-500 mb-2">
-                EDU.01 / Data Science
-              </h3>
-              <p className="font-sans text-sm md:text-base uppercase">IIT Madras (Online) <br/> Class of 2027</p>
-            </div>
-            <div>
-              <h3 className="text-xs font-sans uppercase tracking-[0.2em] text-gray-500 mb-2">
-                EDU.02 / Info Tech
-              </h3>
-              <p className="font-sans text-sm md:text-base uppercase">University of Kalyani <br/> Class of 2027</p>
-            </div>
-          </div>
+      {/* Image Column */}
+      <div className="w-full md:w-5/12 flex justify-end">
+        <div ref={imgRef} className="relative w-full aspect-[3/4] max-w-md opacity-0">
+          <Image 
+            src="/images/editorial-manifesto.png" 
+            alt="Editorial concept of structure and data" 
+            fill 
+            className="object-cover rounded-sm"
+          />
         </div>
       </div>
 
-      {/* Right Column: Statement */}
-      <div className="w-full md:w-[55%] p-8 md:p-16 flex flex-col justify-center relative z-10 bg-background/80 backdrop-blur-sm">
-        <div ref={textRef} className="font-sans text-3xl md:text-6xl lg:text-[5vw] leading-[1.1] uppercase tracking-tight">
-          <span className="font-light block mb-4">Backend is where <br/> I live.</span>
-          <span className="font-black text-accent block mb-4">Frontend is where <br/> I make things <br/> feel alive.</span>
-          <span className="font-normal italic block text-xl md:text-3xl mt-12 opacity-80 border-l-4 border-accent pl-6 py-2">
-            Machine Learning is the invisible gap between the two.
-          </span>
+      {/* Text Column */}
+      <div ref={textRef} className="w-full md:w-6/12 max-w-xl flex flex-col gap-8">
+        <h2 className="font-display text-4xl md:text-5xl leading-tight text-foreground">
+          Backend is where I live.<br/>
+          <span className="text-accent italic font-medium">Frontend is where I make things feel alive.</span>
+        </h2>
+        
+        <p className="font-sans text-lg text-foreground/80 leading-relaxed font-light">
+          Machine Learning is the invisible gap between the two.
+        </p>
+
+        <div className="grid grid-cols-2 gap-8 mt-8 pt-8 editorial-border-t">
+          <div>
+            <h3 className="font-sans text-xs uppercase tracking-[0.2em] text-foreground/40 mb-2">
+              Education
+            </h3>
+            <p className="font-sans text-sm text-foreground/80 leading-relaxed">
+              IIT Madras (Online)<br/>
+              Data Science, Class of 2027
+            </p>
+          </div>
+          <div>
+            <h3 className="font-sans text-xs uppercase tracking-[0.2em] text-foreground/40 mb-2">
+              Education
+            </h3>
+            <p className="font-sans text-sm text-foreground/80 leading-relaxed">
+              University of Kalyani<br/>
+              Info Tech, Class of 2027
+            </p>
+          </div>
         </div>
       </div>
     </section>

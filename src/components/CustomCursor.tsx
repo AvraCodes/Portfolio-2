@@ -32,24 +32,22 @@ export default function CustomCursor() {
       if (cursorText) {
         text.innerText = cursorText;
         gsap.to(cursor, {
-          scale: 4,
+          scale: 6,
           backgroundColor: "var(--color-foreground)",
-          border: "none",
-          duration: 0.3,
-          ease: "power2.out",
+          duration: 0.5,
+          ease: "power4.out",
         });
         gsap.to(text, {
           opacity: 1,
-          duration: 0.2,
+          duration: 0.3,
           delay: 0.1,
         });
       } else {
         gsap.to(cursor, {
-          scale: 2.5,
-          backgroundColor: "transparent",
-          border: "1px solid var(--color-foreground)",
-          duration: 0.3,
-          ease: "power2.out",
+          scale: 1,
+          backgroundColor: "var(--color-foreground)",
+          duration: 0.5,
+          ease: "power4.out",
         });
       }
     };
@@ -57,16 +55,15 @@ export default function CustomCursor() {
     const handleHoverLeave = () => {
       gsap.to(text, {
         opacity: 0,
-        duration: 0.1,
+        duration: 0.2,
       });
       text.innerText = "";
       
       gsap.to(cursor, {
-        scale: 1,
+        scale: 0.5,
         backgroundColor: "var(--color-foreground)",
-        border: "none",
-        duration: 0.3,
-        ease: "power2.out",
+        duration: 0.5,
+        ease: "power4.out",
       });
     };
 
@@ -98,13 +95,13 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 w-4 h-4 bg-foreground rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:flex items-center justify-center"
-      style={{ willChange: "transform" }}
+      className="fixed top-0 left-0 w-2 h-2 bg-foreground rounded-full pointer-events-none z-[9999] mix-blend-difference hidden md:flex items-center justify-center transition-opacity"
+      style={{ willChange: "transform", opacity: 0.5 }}
     >
       <span 
         ref={textRef} 
-        className="text-[4px] font-sans font-bold text-background opacity-0 text-center uppercase tracking-widest whitespace-nowrap mix-blend-normal"
-        style={{ transform: "scale(0.5)" }}
+        className="text-[3px] font-sans font-medium text-background opacity-0 text-center uppercase tracking-[0.2em] whitespace-nowrap"
+        style={{ transform: "scale(0.3)" }}
       ></span>
     </div>
   );

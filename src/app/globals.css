@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0d0d0d;
-  --color-foreground: #f5f0eb;
-  --color-accent: #c8ff00;
+  --color-background: #f9f9f7;
+  --color-foreground: #1c1c1c;
+  --color-accent: #a39171; /* Sophisticated muted gold/taupe */
   
-  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 :root {
-  --background: #0d0d0d;
-  --foreground: #f5f0eb;
+  --background: #f9f9f7;
+  --foreground: #1c1c1c;
 }
 
 body {
@@ -20,57 +20,38 @@ body {
   overflow-x: hidden;
 }
 
-/* Background Grid */
-.bg-grid {
-  background-size: 5vw 5vw;
-  background-image: 
-    linear-gradient(to right, rgba(245, 240, 235, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(245, 240, 235, 0.05) 1px, transparent 1px);
-}
-
-/* Custom Scrollbar for Neo-Brutalism */
+/* Elegant Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
-  border-left: 1px solid var(--foreground);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--foreground);
-  border: 1px solid var(--background);
+  background: rgba(28, 28, 28, 0.2);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: rgba(28, 28, 28, 0.5);
 }
 
-/* Structural Borders */
-.brutal-border {
-  border: 1px solid var(--foreground);
+/* Delicate Editorial Borders */
+.editorial-border {
+  border: 1px solid rgba(28, 28, 28, 0.1);
 }
-.brutal-border-b {
-  border-bottom: 1px solid var(--foreground);
+.editorial-border-b {
+  border-bottom: 1px solid rgba(28, 28, 28, 0.1);
 }
-.brutal-border-r {
-  border-right: 1px solid var(--foreground);
+.editorial-border-r {
+  border-right: 1px solid rgba(28, 28, 28, 0.1);
 }
-.brutal-border-t {
-  border-top: 1px solid var(--foreground);
+.editorial-border-t {
+  border-top: 1px solid rgba(28, 28, 28, 0.1);
 }
-.brutal-border-l {
-  border-left: 1px solid var(--foreground);
-}
-
-/* Marquee Animation */
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-100%); }
-}
-
-.animate-marquee {
-  animation: marquee 20s linear infinite;
+.editorial-border-l {
+  border-left: 1px solid rgba(28, 28, 28, 0.1);
 }

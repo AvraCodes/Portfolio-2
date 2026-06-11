@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Anton, Space_Grotesk } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 
-const anton = Anton({
-  weight: "400",
-  variable: "--font-anton",
+const playfair = Playfair_Display({
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-playfair",
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -29,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${anton.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background bg-grid text-foreground selection:bg-accent selection:text-black">
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-accent selection:text-background">
         <CustomCursor />
         <PageTransition>{children}</PageTransition>
       </body>
