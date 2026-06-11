@@ -7,39 +7,15 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const experience = [
-  {
-    role: "Independent Developer",
-    focus: "AI, ML & Full-Stack Systems",
-    timeline: "2025 — Present",
-    details: "Designed Alvyn (AI Data Analyst API), built end-to-end data pipelines for 55k+ records, optimized LLM workflows."
-  },
-  {
-    role: "ML & Data Science",
-    focus: "Competitive & Applied",
-    timeline: "2025 — Present",
-    details: "Achieved ~80% in Kaggle competitions. Focused on feature engineering, structured/unstructured preprocessing."
-  },
-  {
-    role: "Full-Stack Dev",
-    focus: "Agency & Freelance",
-    timeline: "2025 — Present",
-    details: "Built clean, responsive UI with React/Next.js integrated with Python/FastAPI backends."
-  }
+  { role: "Independent Developer", focus: "AI & Full-Stack", timeline: "25 — Present" },
+  { role: "ML & Data Science", focus: "Applied ML", timeline: "25 — Present" },
+  { role: "Full-Stack Dev", focus: "Agency", timeline: "25 — Present" }
 ];
 
 const capabilities = [
-  {
-    domain: "Distributed Systems",
-    tools: "Python, FastAPI, Node.js, PostgreSQL, Redis, Docker",
-  },
-  {
-    domain: "ML Pipelines",
-    tools: "Pandas, NumPy, Scikit-learn, Vector DBs, RAG",
-  },
-  {
-    domain: "Web Interfaces",
-    tools: "React, Next.js, TypeScript, Tailwind CSS, GSAP",
-  },
+  "Distributed Systems", "Python", "FastAPI", "PostgreSQL", 
+  "Redis", "Docker", "ML Pipelines", "Scikit-learn", 
+  "Vector DBs", "RAG", "React", "Next.js", "TypeScript", "GSAP"
 ];
 
 export default function Capabilities() {
@@ -48,17 +24,15 @@ export default function Capabilities() {
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    const items = sectionRef.current.querySelectorAll('.fade-up');
-    
     gsap.fromTo(
-      items,
-      { y: 30, opacity: 0 },
+      sectionRef.current.querySelectorAll('.fade-up'),
+      { y: 50, opacity: 0 },
       {
         y: 0,
         opacity: 1,
-        duration: 1.2,
-        ease: "power3.out",
-        stagger: 0.15,
+        duration: 1.5,
+        ease: "power4.out",
+        stagger: 0.1,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 75%",
@@ -68,49 +42,39 @@ export default function Capabilities() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="w-full py-32 bg-background editorial-border-b">
-      <div className="max-w-6xl mx-auto px-8 md:px-16 flex flex-col md:flex-row gap-24">
+    <section ref={sectionRef} className="w-full py-32 bg-background border-t border-foreground/10 px-4 md:px-8">
+      <div className="w-full flex flex-col md:flex-row gap-32 items-start">
         
-        {/* Left Column: Experience */}
+        {/* Experience List */}
         <div className="w-full md:w-1/2">
-          <h2 className="fade-up font-display text-3xl md:text-4xl text-foreground mb-16">
-            Experience Log
+          <h2 className="fade-up font-sans text-xs uppercase tracking-[0.2em] font-bold mb-16 ml-4">
+            Curriculum Vitae
           </h2>
 
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col w-full">
             {experience.map((exp, i) => (
-              <div key={i} className="fade-up flex flex-col gap-3">
-                <div className="flex justify-between items-baseline border-b border-foreground/10 pb-2">
-                  <h3 className="font-sans text-lg text-foreground font-medium">{exp.role}</h3>
-                  <span className="font-sans text-xs text-foreground/40 tracking-widest">{exp.timeline}</span>
+              <div key={i} className="fade-up flex justify-between items-end border-b border-foreground/10 py-8 px-4 hover:pl-8 transition-all duration-500">
+                <h3 className="font-display text-4xl md:text-5xl uppercase tracking-tighter m-0">{exp.role}</h3>
+                <div className="text-right flex flex-col items-end gap-2">
+                  <span className="font-sans text-xs uppercase tracking-[0.2em] font-bold">{exp.timeline}</span>
+                  <span className="font-sans text-xs uppercase tracking-[0.2em] text-foreground/40">{exp.focus}</span>
                 </div>
-                <p className="font-sans text-sm tracking-[0.1em] text-accent uppercase">
-                  {exp.focus}
-                </p>
-                <p className="font-sans text-sm text-foreground/70 font-light leading-relaxed">
-                  {exp.details}
-                </p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right Column: Capabilities */}
+        {/* Capabilities Grid */}
         <div className="w-full md:w-1/2">
-          <h2 className="fade-up font-display text-3xl md:text-4xl text-foreground mb-16">
-            System Specs
+          <h2 className="fade-up font-sans text-xs uppercase tracking-[0.2em] font-bold mb-16 ml-4">
+            Index of Competence
           </h2>
-
-          <div className="flex flex-col gap-12">
+          
+          <div className="flex flex-wrap gap-x-12 gap-y-6 px-4">
             {capabilities.map((cap, i) => (
-              <div key={i} className="fade-up flex flex-col gap-3">
-                <h3 className="font-sans text-lg text-foreground font-medium pb-2 border-b border-foreground/10">
-                  {cap.domain}
-                </h3>
-                <p className="font-sans text-sm text-foreground/60 font-light leading-relaxed tracking-wide">
-                  {cap.tools}
-                </p>
-              </div>
+              <span key={i} className="fade-up font-display text-2xl md:text-4xl italic text-foreground/80 hover:text-foreground transition-colors">
+                {cap}
+              </span>
             ))}
           </div>
         </div>

@@ -8,51 +8,45 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current) return;
+    if (!sectionRef.current || !textRef.current) return;
 
     gsap.fromTo(
-      sectionRef.current.querySelectorAll('.fade-in'),
-      { y: 30, opacity: 0 },
+      textRef.current,
+      { opacity: 0, scale: 0.95 },
       {
-        y: 0,
         opacity: 1,
-        duration: 1.5,
-        ease: "power3.out",
-        stagger: 0.2,
+        scale: 1,
+        duration: 2,
+        ease: "power4.out",
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 80%",
+          start: "top 60%",
         }
       }
     );
   }, []);
 
   return (
-    <section ref={sectionRef} className="w-full py-32 bg-background flex flex-col items-center justify-center text-center px-8">
-      <div className="max-w-2xl mx-auto flex flex-col items-center">
-        <span className="fade-in font-sans text-xs uppercase tracking-[0.2em] text-accent mb-8">
-          Available for Opportunities
-        </span>
-        
-        <h2 className="fade-in font-display text-5xl md:text-7xl text-foreground leading-tight mb-12">
-          Let's build something <br/> <span className="italic">beautiful together.</span>
-        </h2>
-        
-        <a 
-          href="mailto:contact@avra.dev" 
-          data-cursor-text="SAY HI"
-          className="fade-in font-sans text-sm tracking-[0.2em] uppercase text-foreground pb-2 border-b border-foreground/20 hover:border-foreground transition-colors mb-24"
-        >
-          contact@avra.dev
-        </a>
+    <section ref={sectionRef} className="w-full min-h-[70vh] bg-foreground text-background flex flex-col justify-center items-center text-center px-4 overflow-hidden relative">
+      <div className="absolute top-8 left-8 font-sans text-xs tracking-[0.2em] uppercase font-bold text-background/50">
+        Inquiries
+      </div>
 
-        <div className="fade-in flex gap-8 font-sans text-xs tracking-widest uppercase text-foreground/40">
-          <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
-          <a href="#" className="hover:text-foreground transition-colors">LinkedIn</a>
-          <a href="#" className="hover:text-foreground transition-colors">Twitter</a>
-        </div>
+      <h2 
+        ref={textRef} 
+        className="font-display text-[12vw] leading-[0.8] tracking-tighter uppercase mb-16 hover:italic transition-all duration-500 cursor-pointer"
+        data-cursor-text="EMAIL"
+        onClick={() => window.location.href = "mailto:contact@avra.dev"}
+      >
+        CONTACT
+      </h2>
+
+      <div className="flex gap-16 font-sans text-xs tracking-[0.2em] uppercase font-bold absolute bottom-8">
+        <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="hover:text-background/50 transition-colors">GitHub</a>
+        <a href="#" className="hover:text-background/50 transition-colors">LinkedIn</a>
       </div>
     </section>
   );

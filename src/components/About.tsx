@@ -3,86 +3,68 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !imgRef.current || !textRef.current) return;
+    if (!sectionRef.current || !textRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 70%",
-      }
-    });
-
-    tl.fromTo(
-      imgRef.current,
+    const words = textRef.current.querySelectorAll('.word');
+    
+    gsap.fromTo(
+      words,
       { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.5, ease: "power3.out" }
-    ).fromTo(
-      textRef.current.children,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.2, ease: "power3.out", stagger: 0.2 },
-      "-=1"
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1.5,
+        ease: "power4.out",
+        stagger: 0.05,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%",
+        }
+      }
     );
-
   }, []);
+
+  const text = "Backend is where I live. Frontend is where I make things feel alive. Machine Learning is the invisible gap between the two.";
+  const words = text.split(" ");
 
   return (
     <section 
       ref={sectionRef}
-      className="w-full py-32 md:py-48 px-8 md:px-16 flex flex-col md:flex-row items-center justify-center gap-16 md:gap-32 bg-background"
+      className="w-full min-h-[80vh] flex flex-col justify-center px-4 md:px-16 py-32 bg-background border-t border-foreground/10"
     >
-      {/* Image Column */}
-      <div className="w-full md:w-5/12 flex justify-end">
-        <div ref={imgRef} className="relative w-full aspect-[3/4] max-w-md opacity-0">
-          <Image 
-            src="/images/editorial-manifesto.png" 
-            alt="Editorial concept of structure and data" 
-            fill 
-            className="object-cover rounded-sm"
-          />
-        </div>
-      </div>
-
-      {/* Text Column */}
-      <div ref={textRef} className="w-full md:w-6/12 max-w-xl flex flex-col gap-8">
-        <h2 className="font-display text-4xl md:text-5xl leading-tight text-foreground">
-          Backend is where I live.<br/>
-          <span className="text-accent italic font-medium">Frontend is where I make things feel alive.</span>
-        </h2>
+      <div className="max-w-[90vw] mx-auto flex flex-col md:flex-row gap-16 md:gap-32 items-start">
         
-        <p className="font-sans text-lg text-foreground/80 leading-relaxed font-light">
-          Machine Learning is the invisible gap between the two.
-        </p>
-
-        <div className="grid grid-cols-2 gap-8 mt-8 pt-8 editorial-border-t">
-          <div>
-            <h3 className="font-sans text-xs uppercase tracking-[0.2em] text-foreground/40 mb-2">
-              Education
-            </h3>
-            <p className="font-sans text-sm text-foreground/80 leading-relaxed">
-              IIT Madras (Online)<br/>
-              Data Science, Class of 2027
-            </p>
-          </div>
-          <div>
-            <h3 className="font-sans text-xs uppercase tracking-[0.2em] text-foreground/40 mb-2">
-              Education
-            </h3>
-            <p className="font-sans text-sm text-foreground/80 leading-relaxed">
-              University of Kalyani<br/>
-              Info Tech, Class of 2027
-            </p>
-          </div>
+        {/* Abstract Data Definition */}
+        <div className="w-full md:w-1/4 font-sans text-xs uppercase tracking-[0.2em] font-medium leading-loose pt-4">
+          The Manifesto <br/>
+          <span className="text-foreground/40 mt-4 block">
+            A precise balance between architectural logic and aesthetic compulsion. Vol. 01.
+          </span>
         </div>
+
+        {/* Massive Drop Cap Text */}
+        <div 
+          ref={textRef} 
+          className="w-full md:w-3/4 font-display text-5xl md:text-7xl lg:text-[7vw] leading-[0.85] tracking-tighter"
+        >
+          {words.map((word, i) => (
+            <span key={i} className="word inline-block mr-3 md:mr-6 pb-2">
+              {i === 0 ? (
+                <span className="float-left text-[20vw] leading-[0.6] pr-4 mt-2 italic">{word[0]}</span>
+              ) : null}
+              {i === 0 ? word.slice(1) : word}
+            </span>
+          ))}
+        </div>
+
       </div>
     </section>
   );

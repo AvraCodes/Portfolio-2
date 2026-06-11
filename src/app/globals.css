@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f9f9f7;
-  --color-foreground: #1c1c1c;
-  --color-accent: #5c6b73; /* Sophisticated cool slate */
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-accent: #000000; /* Pure stark contrast */
   
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 :root {
-  --background: #f9f9f7;
-  --foreground: #1c1c1c;
+  --background: #ffffff;
+  --foreground: #000000;
 }
 
 body {
@@ -20,38 +20,27 @@ body {
   overflow-x: hidden;
 }
 
-/* Elegant Scrollbar */
+/* Hidden Scrollbar for pure minimal look */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  display: none;
+}
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* Image Reveal Hover Utility */
+.hover-reveal-img {
+  position: fixed;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 50;
+  transform: translate(-50%, -50%) scale(0.8);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  filter: grayscale(100%) contrast(1.2);
 }
-
-::-webkit-scrollbar-thumb {
-  background: rgba(28, 28, 28, 0.2);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(28, 28, 28, 0.5);
-}
-
-/* Delicate Editorial Borders */
-.editorial-border {
-  border: 1px solid rgba(28, 28, 28, 0.1);
-}
-.editorial-border-b {
-  border-bottom: 1px solid rgba(28, 28, 28, 0.1);
-}
-.editorial-border-r {
-  border-right: 1px solid rgba(28, 28, 28, 0.1);
-}
-.editorial-border-t {
-  border-top: 1px solid rgba(28, 28, 28, 0.1);
-}
-.editorial-border-l {
-  border-left: 1px solid rgba(28, 28, 28, 0.1);
+.hover-reveal-text:hover ~ .hover-reveal-img {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
 }
