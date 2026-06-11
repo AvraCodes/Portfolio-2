@@ -9,112 +9,183 @@ gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
+    id: "01",
     title: "Alvyn v2",
-    description: "An intelligent Data Analyst agent that automates web scraping, data analysis, and visualization via a robust FastAPI REST backend.",
-    tags: ["FastAPI", "Python", "LLMs", "REST"],
+    desc: "Data analyst agent. Automates scraping, analysis, visualization via REST API.",
+    tech: "FastAPI · Python · LLMs · REST",
     link: "https://github.com/AvraCodes/Alvyn-V2",
     image: "/images/editorial-alvyn.png"
   },
   {
-    title: "Distributed Job Queue",
-    description: "A highly scalable job monitoring system with a real-time observability dashboard, handling thousands of tasks seamlessly.",
-    tags: ["FastAPI", "Redis", "WebSockets", "Docker"],
+    id: "02",
+    title: "Job Queue",
+    desc: "Real-time job monitoring at scale with observability dashboard.",
+    tech: "FastAPI · Redis · WebSockets · PostgreSQL · Docker",
     link: "#",
     image: "/images/editorial-queue.png"
   },
   {
+    id: "03",
     title: "AIRMAN Skynet",
-    description: "A secure aviation operations platform featuring role-based access control, sortie dispatching, and comprehensive audit logging.",
-    tags: ["FastAPI", "Next.js", "RBAC", "PostgreSQL"],
+    desc: "Aviation ops platform. Role-based access, sortie dispatch, audit logging.",
+    tech: "FastAPI · Next.js · Role-Based Auth",
     link: "https://airman-two.vercel.app",
     image: "/images/editorial-manifesto.png"
   },
   {
-    title: "RAG-Based AI Chatbot",
-    description: "An educational chatbot utilizing Retrieval-Augmented Generation to provide context-aware, highly accurate responses.",
-    tags: ["Python", "Vector DBs", "Machine Learning"],
+    id: "04",
+    title: "RAG Chatbot",
+    desc: "Retrieval-Augmented Generation chatbot for education.",
+    tech: "Python · Vector Databases · LLMs",
     link: "https://rag-chatbot-five-pi.vercel.app",
     image: "/images/editorial-ml.png"
   }
 ];
 
 export default function SelectedWork() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollWrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current) return;
-    
-    const cards = sectionRef.current.querySelectorAll('.project-card');
-    
-    cards.forEach((card) => {
-      gsap.fromTo(
-        card,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: card,
-            start: "top 80%",
-          }
-        }
-      );
+    if (!containerRef.current || !scrollWrapperRef.current) return;
+
+    const panels = gsap.utils.toArray('.work-panel');
+
+    // Horizontal Scroll
+    const tl = gsap.to(panels, {
+      xPercent: -100 * (panels.length - 1),
+      ease: "none",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        pin: true,
+        scrub: 1,
+        snap: 1 / (panels.length - 1),
+        end: () => "+=" + containerRef.current!.offsetWidth * panels.length
+      }
     });
+
+    // Panel entry lines
+    panels.forEach((panel: any, i) => {
+      if (i === 0) return; 
+      const line = panel.querySelector('.entry-line');
+      const contentCuts = panel.querySelectorAll('.cinematic-cut');
+      
+      gsap.fromTo(line, 
+        { height: "0%" }, 
+        { 
+          height: "100%", 
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: panel,
+            containerAnimation: tl,
+            start: "left 75%",
+            toggleActions: "play none none reverse"
+          }
+      });
+      
+      gsap.fromTo(contentCuts, 
+        { clipPath: "inset(0 0 100% 0)" }, 
+        { 
+          clipPath: "inset(0 0 0% 0)", 
+          duration: 0.8,
+          ease: "power4.out",
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: panel,
+            containerAnimation: tl,
+            start: "left 60%",
+            toggleActions: "play none none reverse"
+          }
+      });
+    });
+
+    return () => {
+      tl.kill();
+    };
   }, []);
 
   return (
-    <section id="work" ref={sectionRef} className="w-full py-24 px-6 relative z-10">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-16 text-center">
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Selected Work</h2>
-          <p className="text-foreground/60 max-w-2xl mx-auto">
-            A showcase of distributed systems, machine learning pipelines, and the interfaces that power them.
-          </p>
-        </div>
+    <section 
+      id="work"
+      ref={containerRef} 
+      className="w-full h-screen bg-transparent overflow-hidden relative border-t border-border"
+    >
+      <div className="absolute top-8 left-6 md:left-12 font-sans text-[11px] uppercase tracking-[0.2em] z-10 text-secondary-text">
+        — 03 / SELECTED WORK
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {projects.map((project, i) => (
-            <a 
-              key={i} 
-              href={project.link}
-              target="_blank"
-              rel="noreferrer"
-              className="project-card glass-card rounded-2xl overflow-hidden group flex flex-col block"
-            >
-              {/* Image Container */}
-              <div className="relative w-full aspect-[16/10] overflow-hidden bg-white/5">
+      <div 
+        ref={scrollWrapperRef}
+        className="flex w-[400vw] h-full"
+      >
+        {projects.map((project, index) => (
+          <div 
+            key={project.id}
+            className="work-panel w-[100vw] h-full flex relative items-center justify-center"
+          >
+            {/* Entry Line (drawn on scroll) */}
+            {index > 0 && (
+              <div className="entry-line absolute left-0 top-0 w-[1px] bg-border z-20 h-0" />
+            )}
+
+            <div className="w-full h-full relative flex flex-col justify-center px-6 md:px-12 pt-24 pb-12">
+              
+              {/* Ghost Number Behind */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-sans text-[40vh] font-[100] ghost-text opacity-30 leading-none select-none z-0">
+                {project.id}
+              </div>
+
+              {/* Film Still Image */}
+              <div className="cinematic-cut overflow-hidden w-full max-w-5xl mx-auto aspect-[16/7] relative z-10">
                 <Image
                   src={project.image}
                   alt={project.title}
                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover cinematic-img"
+                  priority={index === 0}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                  <span className="text-white font-medium flex items-center gap-2">
-                    View Project <span className="text-accent">→</span>
-                  </span>
-                </div>
               </div>
 
-              {/* Content Container */}
-              <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-2xl font-bold tracking-tight mb-3">{project.title}</h3>
-                <p className="text-foreground/70 leading-relaxed mb-6 flex-grow">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {project.tags.map((tag, j) => (
-                    <span key={j} className="text-xs font-medium px-3 py-1 bg-white/10 rounded-full text-foreground/80">
-                      {tag}
-                    </span>
-                  ))}
+              {/* Metadata Overlay / Underneath */}
+              <div className="w-full max-w-5xl mx-auto mt-8 flex flex-col md:flex-row justify-between items-start md:items-end z-10 gap-8">
+                
+                <div className="flex flex-col gap-2">
+                  <div className="cinematic-cut overflow-hidden">
+                    <h3 className="font-display text-[48px] md:text-[64px] font-bold leading-none uppercase text-primary-text">
+                      {project.title}
+                    </h3>
+                  </div>
+                  <div className="cinematic-cut overflow-hidden max-w-md">
+                    <p className="font-sans text-[14px] font-[300] tracking-wide text-secondary-text">
+                      {project.desc}
+                    </p>
+                  </div>
                 </div>
+
+                <div className="flex flex-col items-start md:items-end gap-6">
+                  <div className="cinematic-cut overflow-hidden">
+                    <div className="font-sans text-[10px] tracking-[0.2em] uppercase text-secondary-text">
+                      {project.tech}
+                    </div>
+                  </div>
+                  <div className="cinematic-cut overflow-hidden">
+                    <a 
+                      href={project.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="clip-link font-sans text-[12px] font-bold tracking-widest uppercase text-primary-text"
+                      data-text="VIEW →"
+                    >
+                      <span>VIEW →</span>
+                    </a>
+                  </div>
+                </div>
+
               </div>
-            </a>
-          ))}
-        </div>
+
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

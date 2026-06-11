@@ -20,17 +20,16 @@ export default function Capabilities() {
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    const rows = sectionRef.current.querySelectorAll('.cap-row');
+    const cuts = sectionRef.current.querySelectorAll('.cinematic-cut');
     
     gsap.fromTo(
-      rows,
-      { opacity: 0, x: -20 },
+      cuts,
+      { clipPath: "inset(0 0 100% 0)" },
       {
-        opacity: 1,
-        x: 0,
-        duration: 1,
-        stagger: 0.15,
-        ease: "power3.out",
+        clipPath: "inset(0 0 0% 0)",
+        duration: 0.8,
+        ease: "power4.out",
+        stagger: 0.1,
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top 70%",
@@ -40,24 +39,27 @@ export default function Capabilities() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="w-full py-32 px-4 md:px-8 bg-background">
-      <div className="font-sans text-[11px] uppercase tracking-[0.2em] mb-24 text-foreground/70">
-        — 04 / CAPABILITIES
+    <section ref={sectionRef} className="w-full py-32 px-6 md:px-12 bg-transparent relative z-10 border-t border-border">
+      
+      <div className="cinematic-cut overflow-hidden mb-24">
+        <div className="font-sans text-[11px] uppercase tracking-[0.2em] text-secondary-text">
+          — 04 / CAPABILITIES
+        </div>
       </div>
 
-      <div className="w-full max-w-6xl">
+      <div className="w-full">
         {capabilities.map((cap, i) => (
           <div 
             key={i} 
-            className="cap-row grid-12 items-baseline border-b border-foreground/20 py-8 group hover:bg-foreground hover:text-background transition-colors duration-500 cursor-default px-4"
+            className="grid grid-cols-1 md:grid-cols-12 items-baseline border-b border-border py-6"
           >
-            <div className="col-span-12 md:col-span-5 mb-4 md:mb-0">
-              <span className="font-display text-[24px] md:text-[32px] tracking-wide">
+            <div className="md:col-span-4 cinematic-cut overflow-hidden">
+              <span className="font-sans text-[16px] md:text-[20px] font-medium tracking-wide text-primary-text">
                 {cap.domain}
               </span>
             </div>
-            <div className="col-span-12 md:col-span-7">
-              <span className="font-sans text-[14px] font-[300] tracking-wider text-foreground/80 group-hover:text-background/80 transition-colors duration-500">
+            <div className="md:col-span-8 cinematic-cut overflow-hidden mt-2 md:mt-0">
+              <span className="font-sans text-[14px] font-[300] tracking-wider text-secondary-text">
                 {cap.tech}
               </span>
             </div>

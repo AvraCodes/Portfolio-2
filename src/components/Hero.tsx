@@ -2,55 +2,79 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { SplitText } from "./SplitText";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
-    
-    const elements = containerRef.current.querySelectorAll('.hero-element');
-    
-    gsap.fromTo(
-      elements,
-      { y: 30, opacity: 0 },
+
+    const chars = containerRef.current.querySelectorAll('.char');
+    const reveals = containerRef.current.querySelectorAll('.cinematic-cut');
+
+    const tl = gsap.timeline({ delay: 0.2 });
+
+    // Staggered upward character reveal
+    tl.fromTo(
+      chars,
+      { y: "100%" },
       {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.15,
-        ease: "power3.out",
-        delay: 0.2
+        y: "0%",
+        duration: 1.2,
+        ease: "expo.out",
+        stagger: 0.03,
       }
+    );
+
+    // Hard clip-path cuts for metadata (no opacity fades)
+    tl.fromTo(
+      reveals,
+      { clipPath: "inset(0 0 100% 0)" },
+      { 
+        clipPath: "inset(0 0 0% 0)", 
+        duration: 0.6, 
+        ease: "power4.out",
+        stagger: 0.1
+      },
+      "-=0.6"
     );
   }, []);
 
   return (
-    <section className="relative w-full min-h-screen flex flex-col justify-center items-center px-6 bg-gradient-mesh overflow-hidden text-center pt-20">
-      <div className="max-w-4xl flex flex-col items-center z-10" ref={containerRef}>
-        
-        <div className="hero-element inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 border border-white/10 shadow-xl">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-          <span className="text-xs font-medium text-foreground/80 tracking-wide uppercase">Available for new opportunities</span>
-        </div>
+    <section ref={containerRef} className="w-full h-screen flex flex-col justify-center px-6 md:px-12 relative overflow-hidden bg-transparent">
+      
+      {/* Massive Ghost Typography */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 w-full text-center">
+        <span className="font-display text-[400px] leading-none tracking-tighter ghost-text opacity-30 select-none">
+          2026
+        </span>
+      </div>
 
-        <h1 className="hero-element text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight">
-          Building distributed systems <br className="hidden md:block"/>
-          <span className="text-foreground/50">&amp; machine learning pipelines.</span>
+      <div className="w-full flex flex-col z-10 relative mt-auto pb-12">
+        
+        {/* Main Title */}
+        <h1 className="font-display text-[15vw] md:text-[18vw] font-[800] leading-[0.75] tracking-tighter uppercase m-0 p-0 text-primary-text">
+          <SplitText text="SYSTEMS" />
         </h1>
         
-        <p className="hero-element text-lg md:text-xl text-foreground/60 max-w-2xl mb-12 leading-relaxed">
-          I'm Avra, a Data Scientist and Full-Stack Developer. I engineer robust backend architectures and train ML models, then wrap them in beautiful, intuitive interfaces.
-        </p>
-        
-        <div className="hero-element flex flex-col sm:flex-row gap-4">
-          <a href="#work" className="px-8 py-4 bg-foreground text-background font-medium rounded-full hover:bg-foreground/90 transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] hover:-translate-y-1">
-            View Selected Work
-          </a>
-          <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="px-8 py-4 glass text-foreground font-medium rounded-full hover:bg-white/10 transition-all hover:-translate-y-1">
-            Explore GitHub
-          </a>
+        {/* Subtitle */}
+        <div className="cinematic-cut overflow-hidden mt-8 md:mt-12 max-w-3xl">
+          <p className="font-sans text-[12px] uppercase tracking-[0.25em] font-medium text-primary-text/90 leading-loose">
+            DATA SCIENTIST — FULL-STACK DEVELOPER — SYSTEMS BUILDER
+          </p>
         </div>
+
+        {/* Footer Row */}
+        <div className="flex justify-between items-end w-full mt-24">
+          <div className="cinematic-cut overflow-hidden">
+            <span className="font-sans text-[11px] uppercase text-secondary-text tracking-[0.1em]">Vol. 01</span>
+          </div>
+          <div className="cinematic-cut overflow-hidden">
+            <span className="font-sans text-[10px] uppercase tracking-[0.2em] font-bold text-primary-text">↓ SCROLL</span>
+          </div>
+        </div>
+
       </div>
     </section>
   );

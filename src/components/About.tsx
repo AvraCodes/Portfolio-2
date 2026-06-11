@@ -3,90 +3,87 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "./SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const capabilities = [
-  { category: "Backend & Systems", tech: "Python, FastAPI, Node.js, PostgreSQL, Redis, WebSockets, Docker" },
-  { category: "Machine Learning", tech: "Scikit-learn, Pandas, NumPy, Vector Databases, RAG, LLMs" },
-  { category: "Frontend", tech: "React, Next.js, TypeScript, Tailwind CSS, GSAP" },
-];
-
-const education = [
-  { degree: "B.S. Data Science", school: "IIT Madras (Online)", year: "Class of 2027" },
-  { degree: "B.Tech Information Technology", school: "University of Kalyani", year: "Class of 2027" },
-];
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current) return;
-    
+
+    const cuts = sectionRef.current.querySelectorAll('.cinematic-cut');
+
     gsap.fromTo(
-      sectionRef.current.querySelectorAll('.about-fade'),
-      { y: 30, opacity: 0 },
+      cuts,
+      { clipPath: "inset(0 0 100% 0)" },
       {
-        y: 0,
-        opacity: 1,
+        clipPath: "inset(0 0 0% 0)",
         duration: 0.8,
-        stagger: 0.1,
-        ease: "power3.out",
+        ease: "power4.out",
+        stagger: 0.15,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 70%",
+          start: "top 60%",
         }
       }
     );
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="w-full py-24 px-6 relative z-10">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
-        
-        {/* Left Column: Bio & Education */}
-        <div className="flex flex-col gap-8">
-          <div className="about-fade glass-card p-8 rounded-2xl">
-            <h2 className="text-2xl font-bold mb-4 tracking-tight">About Me</h2>
-            <p className="text-foreground/70 leading-relaxed mb-6">
-              I specialize in building robust distributed systems and machine learning pipelines. 
-              While my core expertise lies in backend architecture and data science, I treat frontend 
-              development as a serious craft, ensuring that complex systems are wrapped in beautiful, 
-              intuitive, and highly responsive user interfaces.
-            </p>
-            <p className="text-foreground/70 leading-relaxed">
-              Whether I'm optimizing a vector database query, training a multi-class classifier, 
-              or perfecting a GSAP animation, I aim for excellence across the entire stack.
-            </p>
-          </div>
+    <section id="about" ref={sectionRef} className="w-full min-h-[80vh] py-32 px-6 md:px-12 relative flex flex-col justify-center border-t border-border">
+      
+      {/* Ghost Background Text */}
+      <div className="absolute top-0 right-0 z-0 h-full overflow-hidden flex items-center justify-end pr-12">
+        <span className="font-display text-[30vh] leading-none tracking-tighter ghost-text opacity-20" style={{ writingMode: 'vertical-rl' }}>
+          AVRA
+        </span>
+      </div>
 
-          <div className="about-fade glass-card p-8 rounded-2xl">
-            <h2 className="text-xl font-bold mb-6 tracking-tight">Education</h2>
-            <div className="flex flex-col gap-6">
-              {education.map((edu, i) => (
-                <div key={i} className="flex flex-col border-l-2 border-accent/50 pl-4">
-                  <h3 className="font-semibold">{edu.degree}</h3>
-                  <div className="flex justify-between text-sm text-foreground/60 mt-1">
-                    <span>{edu.school}</span>
-                    <span>{edu.year}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-16 relative z-10 w-full max-w-7xl mx-auto">
+        
+        {/* Left Column - Manifesto */}
+        <div className="md:col-span-5 md:col-start-2">
+          <div className="cinematic-cut overflow-hidden mb-12">
+            <h2 className="font-sans text-[11px] uppercase tracking-[0.2em] text-secondary-text">
+              — 02 / MANIFESTO
+            </h2>
+          </div>
+          
+          <div className="cinematic-cut overflow-hidden">
+            <p className="font-display text-[28px] md:text-[36px] leading-[1.2] font-light text-primary-text">
+              Backend is where I live.<br/>
+              Frontend is where I make things feel alive.<br/>
+              ML is the gap I close between the two.<br/><br/>
+              I co-founded an agency.<br/>
+              I also compete on Kaggle.<br/>
+              Neither surprises me.
+            </p>
           </div>
         </div>
 
-        {/* Right Column: Capabilities */}
-        <div className="about-fade glass-card p-8 rounded-2xl h-fit">
-          <h2 className="text-2xl font-bold mb-8 tracking-tight">Technical Arsenal</h2>
-          <div className="flex flex-col gap-8">
-            {capabilities.map((cap, i) => (
-              <div key={i} className="flex flex-col gap-2">
-                <h3 className="text-sm uppercase tracking-wider font-semibold text-accent">{cap.category}</h3>
-                <p className="text-foreground/80 leading-relaxed">{cap.tech}</p>
-              </div>
-            ))}
+        {/* Right Column - Education Facts */}
+        <div className="md:col-span-4 md:col-start-8 flex flex-col justify-end mt-16 md:mt-32">
+          
+          <div className="cinematic-cut overflow-hidden border-b border-border pb-4 mb-4 flex flex-col">
+            <span className="font-sans text-[13px] font-semibold tracking-wide text-primary-text mb-1">
+              B.S. DATA SCIENCE
+            </span>
+            <span className="font-sans text-[11px] font-light text-secondary-text tracking-[0.2em] uppercase">
+              IIT Madras online programme, 2027
+            </span>
           </div>
+
+          <div className="cinematic-cut overflow-hidden border-b border-border pb-4 flex flex-col">
+            <span className="font-sans text-[13px] font-semibold tracking-wide text-primary-text mb-1">
+              B.TECH INFORMATION TECHNOLOGY
+            </span>
+            <span className="font-sans text-[11px] font-light text-secondary-text tracking-[0.2em] uppercase">
+              University of Kalyani, 2027
+            </span>
+          </div>
+
         </div>
 
       </div>
