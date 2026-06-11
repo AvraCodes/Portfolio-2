@@ -10,8 +10,8 @@ import * as random from "maath/random/dist/maath-random.esm";
 // Simple Particle Background
 function ParticleField() {
   const ref = useRef<any>(null);
-  // Generate random points in a sphere
-  const sphere = random.inSphere(new Float32Array(5000), { radius: 1.5 });
+  // Generate random points in a sphere (15000 = 5000 particles * 3 coordinates)
+  const sphere = random.inSphere(new Float32Array(15000), { radius: 1.5 });
 
   useEffect(() => {
     // Rotate slowly
