@@ -1,65 +1,146 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const emailRef = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!sectionRef.current) return;
-    
-    gsap.fromTo(
-      sectionRef.current.querySelectorAll('.footer-fade'),
-      { y: 20, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 85%",
+    if (!emailRef.current) return;
+
+    const chars = emailRef.current.querySelectorAll('.email-char');
+
+    chars.forEach((char) => {
+      // Mouse move distortion effect
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = char.getBoundingClientRect();
+        const charCenterX = rect.left + rect.width / 2;
+        const charCenterY = rect.top + rect.height / 2;
+        
+        const distX = e.clientX - charCenterX;
+        const distY = e.clientY - charCenterY;
+        const dist = Math.sqrt(distX * distX + distY * distY);
+        
+        // React if mouse is within 150px
+        if (dist < 150) {
+          const intensity = (150 - dist) / 150;
+          gsap.to(char, {
+            scale: 1 + intensity * 0.4,
+            y: -intensity * 15,
+            rotation: (distX / 150) * 10 * intensity,
+            fontWeight: 700, // Increase weight slightly
+            duration: 0.2,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(char, {
+            scale: 1,
+            y: 0,
+            rotation: 0,
+            fontWeight: 300, // Back to light editorial weight
+            duration: 0.6,
+            ease: "power3.out",
+          });
         }
-      }
-    );
+      };
+
+      const handleMouseLeave = () => {
+        gsap.to(char, {
+          scale: 1,
+          y: 0,
+          rotation: 0,
+          fontWeight: 300,
+          duration: 0.6,
+          ease: "power3.out",
+        });
+      };
+
+      window.addEventListener("mousemove", handleMouseMove as EventListener);
+      char.addEventListener("mouseleave", handleMouseLeave);
+
+      (char as any)._cleanup = () => {
+        window.removeEventListener("mousemove", handleMouseMove as EventListener);
+        char.removeEventListener("mouseleave", handleMouseLeave);
+      };
+    });
+
+    return () => {
+      chars.forEach((char: any) => {
+        if (char._cleanup) char._cleanup();
+      });
+    };
   }, []);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText("eminentavra9836@gmail.com");
+    setCopied(true);
+    
+    // Invert screen effect (Cinematic flash)
+    const body = document.body;
+    body.style.filter = "invert(1)";
+    body.style.backgroundColor = "#F0EDE8";
+    
+    setTimeout(() => {
+      body.style.filter = "none";
+      body.style.backgroundColor = "";
+    }, 150);
+
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const emailText = "eminentavra9836@gmail.com";
+
   return (
-    <footer id="contact" ref={sectionRef} className="w-full py-16 px-6 border-t border-white/5 relative z-10 bg-background/50 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-        
-        <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <h2 className="footer-fade text-2xl font-bold tracking-tight mb-2">Let's Connect</h2>
-          <p className="footer-fade text-foreground/60 max-w-sm">
-            I'm currently available for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
-          </p>
-        </div>
-
-        <div className="footer-fade flex flex-col items-center md:items-end gap-6">
-          <a 
-            href="mailto:eminentavra9836@gmail.com"
-            className="px-8 py-4 bg-accent text-white font-medium rounded-full shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_50px_rgba(59,130,246,0.5)] transition-all hover:-translate-y-1"
-          >
-            eminentavra9836@gmail.com
-          </a>
-          
-          <div className="flex gap-6 text-sm font-medium text-foreground/70">
-            <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
-            <a href="https://linkedin.com/in/avra-paul-1924631b5/" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">LinkedIn</a>
-          </div>
-        </div>
-
-      </div>
+    <section id="contact" className="w-full min-h-[90vh] bg-transparent px-6 md:px-12 py-16 flex flex-col justify-between relative border-t border-border">
       
-      <div className="footer-fade max-w-6xl mx-auto mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-foreground/40">
-        <p>© 2026 Avra Paul. Built to get a job.</p>
-        <p>Stayed to make it worth looking at.</p>
+      {/* Ghost Background Text */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 z-0 overflow-hidden w-full text-center pointer-events-none select-none">
+        <span className="font-display text-[30vw] leading-none tracking-tighter ghost-text opacity-10">
+          CONTACT
+        </span>
       </div>
-    </footer>
+
+      {/* Toast */}
+      <div 
+        className={`fixed bottom-12 left-1/2 -translate-x-1/2 bg-accent text-[#000000] font-sans text-[11px] font-bold tracking-[0.2em] uppercase px-6 py-3 transition-all duration-300 z-50 ${copied ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}
+      >
+        COPIED
+      </div>
+
+      <div className="font-sans text-[11px] uppercase tracking-[0.2em] text-secondary-text relative z-10">
+        — 05 / CONTACT
+      </div>
+
+      <div className="w-full flex justify-center py-32 relative z-10">
+        <div 
+          ref={emailRef} 
+          onClick={handleCopy}
+          className="font-display text-[7vw] md:text-[6vw] font-[300] tracking-tighter leading-none cursor-pointer select-none flex flex-wrap justify-center text-primary-text"
+        >
+          {emailText.split("").map((char, i) => (
+            <span key={i} className="email-char inline-block origin-bottom transition-colors">
+              {char}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-full flex flex-col md:flex-row justify-between items-end gap-8 relative z-10">
+        <div className="flex gap-12 font-sans text-[12px] uppercase tracking-[0.2em]">
+          <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="clip-link text-primary-text" data-text="GITHUB">
+            <span>GITHUB</span>
+          </a>
+          <a href="https://linkedin.com/in/avra-paul-1924631b5/" target="_blank" rel="noreferrer" className="clip-link text-primary-text" data-text="LINKEDIN">
+            <span>LINKEDIN</span>
+          </a>
+        </div>
+        
+        <div className="font-sans text-[10px] text-secondary-text text-right uppercase tracking-[0.2em] max-w-[200px] leading-relaxed">
+          Built to get a job. Stayed to make it worth looking at.
+        </div>
+      </div>
+    </section>
   );
 }
