@@ -1,136 +1,65 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Contact() {
-  const emailRef = useRef<HTMLDivElement>(null);
-  const [copied, setCopied] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!emailRef.current) return;
-
-    const chars = emailRef.current.querySelectorAll('.email-char');
-
-    chars.forEach((char) => {
-      // Mouse move distortion effect
-      const handleMouseMove = (e: MouseEvent) => {
-        const rect = char.getBoundingClientRect();
-        const charCenterX = rect.left + rect.width / 2;
-        const charCenterY = rect.top + rect.height / 2;
-        
-        const distX = e.clientX - charCenterX;
-        const distY = e.clientY - charCenterY;
-        const dist = Math.sqrt(distX * distX + distY * distY);
-        
-        // React if mouse is within 150px
-        if (dist < 150) {
-          const intensity = (150 - dist) / 150;
-          gsap.to(char, {
-            scale: 1 + intensity * 0.5,
-            y: -intensity * 20,
-            rotation: (distX / 150) * 15 * intensity,
-            fontWeight: 800,
-            duration: 0.2,
-            ease: "power2.out",
-          });
-        } else {
-          gsap.to(char, {
-            scale: 1,
-            y: 0,
-            rotation: 0,
-            fontWeight: 400, // back to default font-weight
-            duration: 0.6,
-            ease: "power3.out",
-          });
+    if (!sectionRef.current) return;
+    
+    gsap.fromTo(
+      sectionRef.current.querySelectorAll('.footer-fade'),
+      { y: 20, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 85%",
         }
-      };
-
-      const handleMouseLeave = () => {
-        gsap.to(char, {
-          scale: 1,
-          y: 0,
-          rotation: 0,
-          fontWeight: 400,
-          duration: 0.6,
-          ease: "power3.out",
-        });
-      };
-
-      window.addEventListener("mousemove", handleMouseMove as EventListener);
-      char.addEventListener("mouseleave", handleMouseLeave);
-
-      // Store cleanup on element to avoid memory leaks
-      (char as any)._cleanup = () => {
-        window.removeEventListener("mousemove", handleMouseMove as EventListener);
-        char.removeEventListener("mouseleave", handleMouseLeave);
-      };
-    });
-
-    return () => {
-      chars.forEach((char: any) => {
-        if (char._cleanup) char._cleanup();
-      });
-    };
+      }
+    );
   }, []);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText("eminentavra9836@gmail.com");
-    setCopied(true);
-    
-    // Invert screen effect
-    document.body.classList.add("invert-screen");
-    setTimeout(() => {
-      document.body.classList.remove("invert-screen");
-    }, 150);
-
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const emailText = "eminentavra9836@gmail.com";
-
   return (
-    <section id="contact" className="w-full min-h-[90vh] bg-background px-4 md:px-8 py-16 flex flex-col justify-between relative">
-      
-      {/* Toast */}
-      <div 
-        className={`fixed bottom-8 left-1/2 -translate-x-1/2 bg-accent text-black font-sans text-[11px] font-bold tracking-widest uppercase px-6 py-3 rounded-full transition-all duration-300 z-50 ${copied ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}
-      >
-        COPIED
-      </div>
-
-      <div className="font-sans text-[11px] uppercase tracking-[0.2em] text-foreground/70">
-        — 05 / CONTACT
-      </div>
-
-      <div className="w-full flex justify-center py-32">
-        <div 
-          ref={emailRef} 
-          onClick={handleCopy}
-          className="font-display text-[8vw] md:text-[6vw] tracking-tighter leading-none cursor-pointer select-none flex flex-wrap justify-center"
-        >
-          {emailText.split("").map((char, i) => (
-            <span key={i} className="email-char inline-block origin-bottom transition-colors">
-              {char}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <div className="w-full flex flex-col md:flex-row justify-between items-end gap-8">
-        <div className="flex gap-12 font-sans text-[12px] uppercase tracking-[0.2em]">
-          <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="clip-link" data-text="GITHUB">
-            <span>GITHUB</span>
-          </a>
-          <a href="https://linkedin.com/in/avra-paul-1924631b5/" target="_blank" rel="noreferrer" className="clip-link" data-text="LINKEDIN">
-            <span>LINKEDIN</span>
-          </a>
-        </div>
+    <footer id="contact" ref={sectionRef} className="w-full py-16 px-6 border-t border-white/5 relative z-10 bg-background/50 backdrop-blur-md">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         
-        <div className="font-sans text-[10px] text-foreground/60 text-right uppercase tracking-widest max-w-[200px] leading-relaxed">
-          Built to get a job. Stayed to make it worth looking at.
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <h2 className="footer-fade text-2xl font-bold tracking-tight mb-2">Let's Connect</h2>
+          <p className="footer-fade text-foreground/60 max-w-sm">
+            I'm currently available for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!
+          </p>
         </div>
+
+        <div className="footer-fade flex flex-col items-center md:items-end gap-6">
+          <a 
+            href="mailto:eminentavra9836@gmail.com"
+            className="px-8 py-4 bg-accent text-white font-medium rounded-full shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_50px_rgba(59,130,246,0.5)] transition-all hover:-translate-y-1"
+          >
+            eminentavra9836@gmail.com
+          </a>
+          
+          <div className="flex gap-6 text-sm font-medium text-foreground/70">
+            <a href="https://github.com/AvraCodes" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">GitHub</a>
+            <a href="https://linkedin.com/in/avra-paul-1924631b5/" target="_blank" rel="noreferrer" className="hover:text-foreground transition-colors">LinkedIn</a>
+          </div>
+        </div>
+
       </div>
-    </section>
+      
+      <div className="footer-fade max-w-6xl mx-auto mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-foreground/40">
+        <p>© 2026 Avra Paul. Built to get a job.</p>
+        <p>Stayed to make it worth looking at.</p>
+      </div>
+    </footer>
   );
 }

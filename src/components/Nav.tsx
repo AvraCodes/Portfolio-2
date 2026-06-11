@@ -1,46 +1,36 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useState } from "react";
 
 export default function Nav() {
-  const navRef = useRef<HTMLElement>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    if (!navRef.current) return;
-
-    // On scroll past hero (approx 100vh), nav background fills
-    ScrollTrigger.create({
-      start: "top -100px",
-      end: 99999,
-      toggleClass: { className: 'scrolled', targets: navRef.current },
-    });
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <nav 
-      ref={navRef}
-      className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-8 py-6 mix-blend-difference transition-all duration-300"
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled ? "py-4 glass" : "py-6 bg-transparent"
+      }`}
     >
-      <style jsx>{`
-        nav.scrolled {
-          background-color: rgba(13, 13, 13, 0.95);
-          border-bottom: 1px solid var(--foreground);
-          mix-blend-mode: normal;
-        }
-      `}</style>
-      
-      <div className="font-sans text-[11px] uppercase tracking-[0.3em]">
-        AVRA PAUL
-      </div>
-      
-      <div className="hidden md:flex gap-8 font-sans text-[11px] uppercase tracking-[0.3em]">
-        <a href="#work" className="clip-link" data-text="WORK"><span>WORK</span></a>
-        <a href="#about" className="clip-link" data-text="ABOUT"><span>ABOUT</span></a>
-        <a href="#contact" className="clip-link" data-text="CONTACT"><span>CONTACT</span></a>
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        <a href="#" className="font-semibold text-lg tracking-tight">
+          Avra Paul<span className="text-accent">.</span>
+        </a>
+        
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-foreground/80">
+          <a href="#about" className="hover:text-foreground transition-colors">About</a>
+          <a href="#work" className="hover:text-foreground transition-colors">Work</a>
+          <a href="#contact" className="px-5 py-2.5 bg-foreground text-background rounded-full hover:bg-foreground/90 transition-all shadow-lg hover:shadow-foreground/20">
+            Get in touch
+          </a>
+        </div>
       </div>
     </nav>
   );

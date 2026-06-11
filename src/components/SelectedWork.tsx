@@ -3,170 +3,118 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
-    id: "01",
     title: "Alvyn v2",
-    desc: "Data analyst agent. Automates scraping, analysis, visualization via REST API.",
-    tech: "FastAPI · Python · LLMs · REST",
-    link: "https://github.com/AvraCodes/Alvyn-V2"
+    description: "An intelligent Data Analyst agent that automates web scraping, data analysis, and visualization via a robust FastAPI REST backend.",
+    tags: ["FastAPI", "Python", "LLMs", "REST"],
+    link: "https://github.com/AvraCodes/Alvyn-V2",
+    image: "/images/editorial-alvyn.png"
   },
   {
-    id: "02",
-    title: "Job Queue",
-    desc: "Real-time job monitoring at scale with observability dashboard.",
-    tech: "FastAPI · Redis · WebSockets · PostgreSQL · Docker",
-    link: "#"
+    title: "Distributed Job Queue",
+    description: "A highly scalable job monitoring system with a real-time observability dashboard, handling thousands of tasks seamlessly.",
+    tags: ["FastAPI", "Redis", "WebSockets", "Docker"],
+    link: "#",
+    image: "/images/editorial-queue.png"
   },
   {
-    id: "03",
     title: "AIRMAN Skynet",
-    desc: "Aviation ops platform. Role-based access, sortie dispatch, audit logging.",
-    tech: "FastAPI · Next.js · Role-Based Auth",
-    link: "https://airman-two.vercel.app"
+    description: "A secure aviation operations platform featuring role-based access control, sortie dispatching, and comprehensive audit logging.",
+    tags: ["FastAPI", "Next.js", "RBAC", "PostgreSQL"],
+    link: "https://airman-two.vercel.app",
+    image: "/images/editorial-manifesto.png"
   },
   {
-    id: "04",
-    title: "RAG Chatbot",
-    desc: "Retrieval-Augmented Generation chatbot for education.",
-    tech: "Python · Vector Databases · LLMs",
-    link: "https://rag-chatbot-five-pi.vercel.app"
+    title: "RAG-Based AI Chatbot",
+    description: "An educational chatbot utilizing Retrieval-Augmented Generation to provide context-aware, highly accurate responses.",
+    tags: ["Python", "Vector DBs", "Machine Learning"],
+    link: "https://rag-chatbot-five-pi.vercel.app",
+    image: "/images/editorial-ml.png"
   }
 ];
 
 export default function SelectedWork() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollWrapperRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!containerRef.current || !scrollWrapperRef.current) return;
-
-    const panels = gsap.utils.toArray('.work-panel');
-
-    // Horizontal Scroll
-    const tl = gsap.to(panels, {
-      xPercent: -100 * (panels.length - 1),
-      ease: "none",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        pin: true,
-        scrub: 1,
-        snap: 1 / (panels.length - 1),
-        end: () => "+=" + containerRef.current!.offsetWidth * panels.length
-      }
-    });
-
-    // Panel entry lines
-    panels.forEach((panel: any, i) => {
-      if (i === 0) return; // Skip first panel as it's already visible
-      const line = panel.querySelector('.entry-line');
-      const content = panel.querySelector('.panel-content');
-      
-      gsap.fromTo(line, 
-        { height: "0%" }, 
-        { 
-          height: "100%", 
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: panel,
-            containerAnimation: tl,
-            start: "left 75%",
-            toggleActions: "play none none reverse"
-          }
-      });
-      
-      gsap.fromTo(content, 
-        { opacity: 0, x: 50 }, 
-        { 
-          opacity: 1, 
-          x: 0, 
+    if (!sectionRef.current) return;
+    
+    const cards = sectionRef.current.querySelectorAll('.project-card');
+    
+    cards.forEach((card) => {
+      gsap.fromTo(
+        card,
+        { y: 50, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
           duration: 0.8,
           ease: "power3.out",
           scrollTrigger: {
-            trigger: panel,
-            containerAnimation: tl,
-            start: "left 60%",
-            toggleActions: "play none none reverse"
+            trigger: card,
+            start: "top 80%",
           }
-      });
+        }
+      );
     });
-
-    return () => {
-      tl.kill();
-    };
   }, []);
 
   return (
-    <section 
-      id="work"
-      ref={containerRef} 
-      className="w-full h-screen bg-background overflow-hidden relative"
-    >
-      <div className="absolute top-8 left-4 md:left-8 font-sans text-[11px] uppercase tracking-[0.2em] z-10 text-foreground/70">
-        — 03 / SELECTED WORK
-      </div>
+    <section id="work" ref={sectionRef} className="w-full py-24 px-6 relative z-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-16 text-center">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Selected Work</h2>
+          <p className="text-foreground/60 max-w-2xl mx-auto">
+            A showcase of distributed systems, machine learning pipelines, and the interfaces that power them.
+          </p>
+        </div>
 
-      <div 
-        ref={scrollWrapperRef}
-        className="flex w-[400vw] h-full"
-      >
-        {projects.map((project, index) => (
-          <div 
-            key={project.id}
-            className="work-panel w-[100vw] h-full flex relative px-4 md:px-16 items-center"
-          >
-            {/* Entry Line (drawn on scroll) */}
-            {index > 0 && (
-              <div className="entry-line absolute left-0 top-0 w-[2px] bg-foreground/20 z-0 h-0" />
-            )}
-
-            <div className="panel-content w-full h-full flex flex-col justify-center relative">
-              
-              {/* Ghost Number */}
-              <div className="absolute top-1/4 left-0 font-sans text-[120px] font-[100] text-foreground/5 leading-none select-none">
-                {project.id}
-              </div>
-
-              {/* Center Content */}
-              <div className="z-10 mt-16 max-w-4xl">
-                <h3 className="font-display text-[64px] md:text-[80px] font-bold leading-none mb-4 uppercase">
-                  {project.title}
-                </h3>
-                
-                {/* Clip-path reveal on hover for description */}
-                <div className="group relative overflow-hidden inline-block cursor-default">
-                  <p className="font-sans text-[14px] font-[300] tracking-wide mb-16 opacity-100 transition-opacity duration-300 group-hover:opacity-0 relative z-10">
-                    {project.desc}
-                  </p>
-                  <p className="font-sans text-[14px] font-[300] tracking-wide mb-16 absolute top-0 left-0 text-accent transform translate-y-full transition-transform duration-300 ease-out group-hover:translate-y-0">
-                    {project.desc}
-                  </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {projects.map((project, i) => (
+            <a 
+              key={i} 
+              href={project.link}
+              target="_blank"
+              rel="noreferrer"
+              className="project-card glass-card rounded-2xl overflow-hidden group flex flex-col block"
+            >
+              {/* Image Container */}
+              <div className="relative w-full aspect-[16/10] overflow-hidden bg-white/5">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                  <span className="text-white font-medium flex items-center gap-2">
+                    View Project <span className="text-accent">→</span>
+                  </span>
                 </div>
               </div>
 
-              {/* Bottom Elements */}
-              <div className="absolute bottom-16 left-0 w-full flex justify-between items-end pr-8 md:pr-32 z-10">
-                <div className="font-sans text-[10px] tracking-[0.2em] uppercase text-foreground/60 max-w-xs md:max-w-none">
-                  {project.tech}
+              {/* Content Container */}
+              <div className="p-8 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold tracking-tight mb-3">{project.title}</h3>
+                <p className="text-foreground/70 leading-relaxed mb-6 flex-grow">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-2 mt-auto">
+                  {project.tags.map((tag, j) => (
+                    <span key={j} className="text-xs font-medium px-3 py-1 bg-white/10 rounded-full text-foreground/80">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                
-                <a 
-                  href={project.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="clip-link font-sans text-[12px] font-bold tracking-widest uppercase"
-                  data-text="VIEW →"
-                >
-                  <span>VIEW →</span>
-                </a>
               </div>
-
-            </div>
-          </div>
-        ))}
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );

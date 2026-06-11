@@ -3,96 +3,90 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "./SplitText";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const capabilities = [
+  { category: "Backend & Systems", tech: "Python, FastAPI, Node.js, PostgreSQL, Redis, WebSockets, Docker" },
+  { category: "Machine Learning", tech: "Scikit-learn, Pandas, NumPy, Vector Databases, RAG, LLMs" },
+  { category: "Frontend", tech: "React, Next.js, TypeScript, Tailwind CSS, GSAP" },
+];
+
+const education = [
+  { degree: "B.S. Data Science", school: "IIT Madras (Online)", year: "Class of 2027" },
+  { degree: "B.Tech Information Technology", school: "University of Kalyani", year: "Class of 2027" },
+];
+
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !textRef.current) return;
-
-    const chars = textRef.current.querySelectorAll('.char');
-    const facts = sectionRef.current.querySelectorAll('.fact-reveal');
-
-    // Text scramble / reveal effect for manifesto
+    if (!sectionRef.current) return;
+    
     gsap.fromTo(
-      chars,
-      { opacity: 0 },
-      {
-        opacity: 1,
-        duration: 0.1,
-        stagger: 0.01,
-        ease: "none",
-        scrollTrigger: {
-          trigger: textRef.current,
-          start: "top 80%",
-        }
-      }
-    );
-
-    // Fade up for education facts
-    gsap.fromTo(
-      facts,
-      { y: 20, opacity: 0 },
+      sectionRef.current.querySelectorAll('.about-fade'),
+      { y: 30, opacity: 0 },
       {
         y: 0,
         opacity: 1,
         duration: 0.8,
+        stagger: 0.1,
         ease: "power3.out",
-        stagger: 0.2,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 60%",
+          start: "top 70%",
         }
       }
     );
   }, []);
 
-  const manifestoText = "Backend is where I live. Frontend is where I make things feel alive. ML is the gap I close between the two. I co-founded an agency. I also compete on Kaggle. Neither surprises me.";
-
   return (
-    <section ref={sectionRef} id="about" className="w-full min-h-screen py-32 px-4 md:px-8 bg-background flex flex-col justify-center">
-      <div className="grid-12 items-start">
+    <section id="about" ref={sectionRef} className="w-full py-24 px-6 relative z-10">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
         
-        {/* Left Column - Manifesto */}
-        <div className="col-span-12 md:col-span-5 mb-16 md:mb-0">
-          <div className="font-sans text-[11px] uppercase tracking-[0.2em] mb-12 text-foreground/70">
-            — 02 / MANIFESTO
+        {/* Left Column: Bio & Education */}
+        <div className="flex flex-col gap-8">
+          <div className="about-fade glass-card p-8 rounded-2xl">
+            <h2 className="text-2xl font-bold mb-4 tracking-tight">About Me</h2>
+            <p className="text-foreground/70 leading-relaxed mb-6">
+              I specialize in building robust distributed systems and machine learning pipelines. 
+              While my core expertise lies in backend architecture and data science, I treat frontend 
+              development as a serious craft, ensuring that complex systems are wrapped in beautiful, 
+              intuitive, and highly responsive user interfaces.
+            </p>
+            <p className="text-foreground/70 leading-relaxed">
+              Whether I'm optimizing a vector database query, training a multi-class classifier, 
+              or perfecting a GSAP animation, I aim for excellence across the entire stack.
+            </p>
           </div>
-          <div 
-            ref={textRef}
-            className="font-display text-[32px] md:text-[40px] leading-[1.1] font-light"
-          >
-            <SplitText text={manifestoText} />
+
+          <div className="about-fade glass-card p-8 rounded-2xl">
+            <h2 className="text-xl font-bold mb-6 tracking-tight">Education</h2>
+            <div className="flex flex-col gap-6">
+              {education.map((edu, i) => (
+                <div key={i} className="flex flex-col border-l-2 border-accent/50 pl-4">
+                  <h3 className="font-semibold">{edu.degree}</h3>
+                  <div className="flex justify-between text-sm text-foreground/60 mt-1">
+                    <span>{edu.school}</span>
+                    <span>{edu.year}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Right Column - Education Facts */}
-        <div className="col-span-12 md:col-span-6 md:col-start-7 flex flex-col justify-end h-full mt-16 md:mt-32">
-          
-          {/* Fact 1 */}
-          <div className="fact-reveal border-b border-foreground/20 pb-4 mb-4 flex flex-col">
-            <span className="font-sans text-[13px] font-semibold tracking-wide mb-1">
-              B.S. DATA SCIENCE
-            </span>
-            <span className="font-sans text-[11px] font-light text-foreground/60 tracking-wider uppercase">
-              IIT Madras online programme, 2027
-            </span>
+        {/* Right Column: Capabilities */}
+        <div className="about-fade glass-card p-8 rounded-2xl h-fit">
+          <h2 className="text-2xl font-bold mb-8 tracking-tight">Technical Arsenal</h2>
+          <div className="flex flex-col gap-8">
+            {capabilities.map((cap, i) => (
+              <div key={i} className="flex flex-col gap-2">
+                <h3 className="text-sm uppercase tracking-wider font-semibold text-accent">{cap.category}</h3>
+                <p className="text-foreground/80 leading-relaxed">{cap.tech}</p>
+              </div>
+            ))}
           </div>
-
-          {/* Fact 2 */}
-          <div className="fact-reveal border-b border-foreground/20 pb-4 flex flex-col">
-            <span className="font-sans text-[13px] font-semibold tracking-wide mb-1">
-              B.TECH INFORMATION TECHNOLOGY
-            </span>
-            <span className="font-sans text-[11px] font-light text-foreground/60 tracking-wider uppercase">
-              University of Kalyani, 2027
-            </span>
-          </div>
-
         </div>
 
       </div>

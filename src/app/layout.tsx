@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import CustomCursor from "@/components/CustomCursor";
 import Nav from "@/components/Nav";
 
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
 export const metadata: Metadata = {
-  title: "AVRA PAUL | Builder of distributed systems",
-  description: "Builder of distributed systems and ML pipelines who also happens to make websites that feel like this.",
+  title: "Avra Paul | Full-Stack & ML Developer",
+  description: "Portfolio of Avra Paul, building distributed systems and machine learning pipelines.",
 };
 
 export default function RootLayout({
@@ -14,12 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <head>
-        <link href="https://api.fontshare.com/v2/css?f[]=editorial-new@400,300,700,500,600&f[]=neue-montreal@400,300,500,700,600&display=swap" rel="stylesheet" />
-      </head>
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-accent selection:text-black">
-        <CustomCursor />
+    <html lang="en" className="scroll-smooth">
+      <body className={`${inter.variable} font-sans bg-background text-foreground antialiased selection:bg-accent/30`}>
         <Nav />
         {children}
       </body>
