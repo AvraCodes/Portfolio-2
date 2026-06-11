@@ -3,7 +3,7 @@
 @theme inline {
   --color-background: #f9f9f7;
   --color-foreground: #1c1c1c;
-  --color-accent: #a39171; /* Sophisticated muted gold/taupe */
+  --color-accent: #5c6b73; /* Sophisticated cool slate */
   
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
