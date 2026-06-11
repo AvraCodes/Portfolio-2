@@ -109,6 +109,7 @@ export default function SelectedWork() {
       <div 
         ref={scrollWrapperRef}
         className="flex h-full w-[300vw]"
+        data-cursor-text="DRAG"
       >
         {projects.map((project, index) => (
           <div 
