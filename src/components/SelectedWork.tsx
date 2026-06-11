@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,28 +16,35 @@ const projects = [
     primaryStack: "RAG",
     impact: "AI assistant automating data scraping & analysis via REST API.",
     link: "https://alvyn-v2.vercel.app",
+    image: "/images/project-alvyn.png",
+    meta: "SYS.DEPLOY: VERCEL // LATENCY: <200ms"
   },
   {
     id: "02",
-    title: "Dist. Job Queue",
+    title: "Job Queue",
     stack: ["FastAPI", "Redis", "WebSockets", "Docker"],
     primaryStack: "WebSockets",
     impact: "Real-time job monitoring at scale with full observability.",
     link: "#",
+    image: "/images/project-queue.png",
+    meta: "ARCH: DISTRIBUTED // NODE: CLUSTER_04"
   },
   {
     id: "03",
-    title: "Kaggle Classifier",
+    title: "ML Classifier",
     stack: ["NLP/ML", "scikit-learn", "Python"],
     primaryStack: "scikit-learn",
     impact: "Competition-grade multi-class comment classification pipeline.",
     link: "https://github.com/AvraCodes/MLP-proj",
+    image: "/images/project-ml.png",
+    meta: "MODEL: DNN // ACCURACY: ~80% KAGGLE"
   },
 ];
 
 export default function SelectedWork() {
   const sectionRef = useRef<HTMLElement>(null);
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -44,8 +52,6 @@ export default function SelectedWork() {
     
     if (!section || !wrapper) return;
 
-    // We calculate how far we need to translate horizontally
-    // 3 panels of 100vw each = 300vw total width. We translate by -200vw.
     const scrollAmount = wrapper.scrollWidth - window.innerWidth;
 
     const tween = gsap.to(wrapper, {
@@ -53,7 +59,7 @@ export default function SelectedWork() {
       ease: "none",
     });
 
-    ScrollTrigger.create({
+    const trigger = ScrollTrigger.create({
       trigger: section,
       start: "top top",
       end: `+=${scrollAmount}`,
@@ -63,8 +69,25 @@ export default function SelectedWork() {
       invalidateOnRefresh: true,
     });
 
+    // Image Parallax Effect during horizontal scroll
+    imageRefs.current.forEach((img, i) => {
+      if (img) {
+        gsap.to(img, {
+          xPercent: 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: img.parentElement,
+            containerAnimation: tween,
+            start: "left right",
+            end: "right left",
+            scrub: true,
+          }
+        });
+      }
+    });
+
     return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      trigger.kill();
     };
   }, []);
 
@@ -74,11 +97,13 @@ export default function SelectedWork() {
       ref={sectionRef} 
       className="h-screen w-full overflow-hidden bg-background relative brutal-border-b"
     >
-      {/* Absolute section title */}
-      <div className="absolute top-8 left-8 z-10 pointer-events-none">
-        <h2 className="text-sm font-sans uppercase tracking-[0.2em] mix-blend-difference text-white">
+      <div className="absolute top-8 left-8 z-50 pointer-events-none mix-blend-difference text-white flex gap-8">
+        <h2 className="text-sm font-sans uppercase tracking-[0.2em]">
           [03] Selected Work
         </h2>
+        <span className="text-sm font-sans uppercase tracking-[0.2em] opacity-50 hidden md:block">
+          SCROLL_X // DRAG
+        </span>
       </div>
 
       <div 
@@ -88,63 +113,81 @@ export default function SelectedWork() {
         {projects.map((project, index) => (
           <div 
             key={project.id}
-            className="w-screen h-full flex items-center justify-center p-4 md:p-16 brutal-border-r relative group"
+            className="w-screen h-full flex flex-col md:flex-row items-stretch brutal-border-r relative group"
           >
-            {/* Background project number */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-[40vw] text-foreground opacity-5 pointer-events-none select-none">
-              {project.id}
+            {/* Left: Metadata & Title (30%) */}
+            <div className="w-full md:w-[30%] h-full p-8 md:p-12 flex flex-col justify-between border-b md:border-b-0 md:border-r border-foreground bg-background relative z-20">
+              <div className="flex justify-between items-start mt-16 md:mt-0">
+                <span className="font-display text-6xl md:text-[8vw] leading-none text-foreground">{project.id}</span>
+              </div>
+              
+              <div>
+                <div className="font-sans text-xs uppercase tracking-widest text-gray-500 mb-4 font-mono">
+                  {project.meta}
+                </div>
+                <h3 className="font-display text-5xl md:text-7xl uppercase mb-6 leading-[0.85] tracking-tighter">
+                  {project.title}
+                </h3>
+                <p className="font-sans text-base md:text-lg uppercase tracking-wide opacity-80 mb-8 border-l-2 border-foreground pl-4">
+                  {project.impact}
+                </p>
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {project.stack.map(tech => (
+                    <span 
+                      key={tech} 
+                      className={`px-3 py-1 text-xs uppercase font-sans brutal-border transition-colors duration-300 ${tech === project.primaryStack ? 'bg-foreground text-background' : ''}`}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <a 
+                href={project.link} 
+                target="_blank" 
+                rel="noreferrer"
+                data-cursor="hover"
+                className="flex items-center justify-between font-sans text-xl uppercase brutal-border px-6 py-4 hover:bg-accent hover:text-black transition-colors w-full group/btn"
+              >
+                <span>Initialize</span>
+                <ArrowUpRight className="w-6 h-6 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
+              </a>
             </div>
 
-            <div className="relative z-10 w-full max-w-4xl p-8 md:p-12 transition-transform duration-500 ease-out group-hover:scale-105">
-              
-              {/* SVG Animated Border */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
-                <rect 
-                  className="w-full h-full fill-none stroke-foreground stroke-[1px] transition-all duration-700 ease-in-out"
-                  style={{
-                    strokeDasharray: "3000",
-                    strokeDashoffset: "3000",
-                  }}
+            {/* Right: Massive Image (70%) */}
+            <div className="w-full md:w-[70%] h-full relative overflow-hidden bg-[#0a0a0a]">
+              {/* Animated Border on Hover */}
+              <div className="absolute inset-4 z-30 pointer-events-none">
+                <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                  <rect 
+                    className="w-full h-full fill-none stroke-accent stroke-[2px] transition-all duration-700 ease-in-out opacity-0 group-hover:opacity-100"
+                    style={{
+                      strokeDasharray: "4000",
+                      strokeDashoffset: "4000",
+                    }}
+                  />
+                </svg>
+                <style jsx>{`
+                  .group:hover svg rect {
+                    stroke-dashoffset: 0;
+                  }
+                `}</style>
+              </div>
+
+              <div className="absolute inset-0 grayscale contrast-150 mix-blend-luminosity">
+                <Image
+                  ref={el => { imageRefs.current[index] = el; }}
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  className="object-cover scale-110"
                 />
-              </svg>
-
-              <style jsx>{`
-                .group:hover svg rect {
-                  stroke-dashoffset: 0;
-                }
-              `}</style>
-
-              <div className="flex justify-between items-start mb-16 relative z-10">
-                <span className="font-display text-4xl">{project.id}</span>
-                <a 
-                  href={project.link} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  data-cursor="hover"
-                  className="p-4 brutal-border hover:bg-accent hover:text-black transition-colors"
-                >
-                  <ArrowUpRight className="w-6 h-6" />
-                </a>
               </div>
-
-              <h3 className="font-display text-6xl md:text-8xl uppercase mb-8 leading-none relative z-10 transition-transform duration-500 group-hover:translate-x-4">
-                {project.title}
-              </h3>
-
-              <div className="flex flex-wrap gap-3 mb-8 relative z-10">
-                {project.stack.map(tech => (
-                  <span 
-                    key={tech} 
-                    className={`px-4 py-2 text-sm uppercase font-sans brutal-border transition-colors duration-300 ${tech === project.primaryStack ? 'group-hover:bg-accent group-hover:text-black' : ''}`}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-
-              <p className="font-sans text-lg md:text-2xl uppercase tracking-wide relative z-10">
-                {project.impact}
-              </p>
+              
+              {/* Duotone Accent Overlay */}
+              <div className="absolute inset-0 bg-accent mix-blend-multiply opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-80 md:hidden"></div>
             </div>
           </div>
         ))}

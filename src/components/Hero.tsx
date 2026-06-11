@@ -43,8 +43,7 @@ export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const textRef1 = useRef<HTMLHeadingElement>(null);
   const textRef2 = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
+  const metaRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     // Character reveal animation
@@ -56,11 +55,11 @@ export default function Hero() {
     if (chars1 && chars2) {
       tl.fromTo(
         [...Array.from(chars1), ...Array.from(chars2)],
-        { y: 100, opacity: 0 },
+        { y: 150, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          duration: 1,
+          duration: 1.2,
           ease: "expo.out",
           stagger: 0.02,
         }
@@ -68,17 +67,10 @@ export default function Hero() {
     }
 
     tl.fromTo(
-      subtitleRef.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "expo.out" },
+      metaRefs.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 2, ease: "power2.inOut", stagger: 0.2 },
       "-=0.5"
-    );
-
-    tl.fromTo(
-      ctaRef.current,
-      { y: 20, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "expo.out" },
-      "-=0.8"
     );
   }, []);
 
@@ -90,40 +82,62 @@ export default function Hero() {
     ));
   };
 
+  const stackTicker = "PYTHON /// FASTAPI /// POSTGRESQL /// DOCKER /// REDIS /// REACT /// NEXT.JS /// THREE.JS /// GSAP /// TAILWIND CSS /// SCIKIT-LEARN /// RAG PIPELINES /// ";
+
   return (
-    <section className="relative w-full h-screen flex flex-col justify-center items-start px-4 md:px-8 brutal-border-b overflow-hidden">
+    <section className="relative w-full h-screen flex flex-col justify-center items-center brutal-border-b overflow-hidden">
       {/* WebGL Background */}
-      <div className="absolute inset-0 z-0 opacity-50">
+      <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen">
         <Canvas camera={{ position: [0, 0, 1] }}>
           <ParticleField />
         </Canvas>
       </div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto" ref={containerRef}>
-        <h1 className="font-display text-[12vw] md:text-[8vw] leading-[0.85] uppercase tracking-tighter m-0">
-          <div ref={textRef1} className="overflow-hidden">
+      {/* Metadata Corners */}
+      <div 
+        ref={el => { metaRefs.current[0] = el; }}
+        className="absolute top-4 left-4 z-20 font-sans text-xs md:text-sm text-gray-500 uppercase tracking-widest hidden md:block"
+      >
+        SYS_STATUS: ACTIVE<br/>
+        UPTIME: 99.9%
+      </div>
+      <div 
+        ref={el => { metaRefs.current[1] = el; }}
+        className="absolute top-4 right-4 z-20 font-sans text-xs md:text-sm text-gray-500 uppercase tracking-widest text-right hidden md:block"
+      >
+        LOC: {new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' }).format(new Date())}<br/>
+        LAT/LONG: 13.0827° N, 80.2707° E
+      </div>
+      <div 
+        ref={el => { metaRefs.current[2] = el; }}
+        className="absolute bottom-16 left-4 z-20 font-sans text-xs md:text-sm text-gray-500 uppercase tracking-widest hidden md:block"
+      >
+        OBJ: FULL_STACK_DELIVERY<br/>
+        AVAILABLE_FOR_DEPLOYMENT
+      </div>
+
+      {/* Main Title */}
+      <div className="relative z-10 w-full max-w-[95vw] mx-auto flex flex-col justify-center items-center" ref={containerRef}>
+        <h1 className="font-display text-[14vw] leading-[0.8] uppercase tracking-tighter text-center m-0 w-full flex flex-col items-center">
+          <div ref={textRef1} className="overflow-hidden pb-2 w-full text-center">
             {splitText("Systems by day.")}
           </div>
-          <div ref={textRef2} className="overflow-hidden text-foreground">
-            {splitText("Interfaces by compulsion.")}
+          <div ref={textRef2} className="overflow-hidden text-foreground pb-2 w-full text-center flex flex-col items-center">
+            {splitText("Interfaces by")}
+            <span className="text-accent block mt-[-2vw]">{splitText("compulsion.")}</span>
           </div>
         </h1>
-        
-        <p 
-          ref={subtitleRef}
-          className="mt-8 font-sans text-sm md:text-base uppercase tracking-[0.2em] opacity-0"
-        >
-          Avra — Data Analyst & Full-Stack Developer
-        </p>
+      </div>
 
-        <a 
-          ref={ctaRef}
-          href="#work"
-          data-cursor="hover"
-          className="mt-16 inline-block font-sans text-lg uppercase brutal-border px-6 py-3 hover:bg-foreground hover:text-background transition-colors duration-300 opacity-0"
-        >
-          Selected Work ↓
-        </a>
+      {/* Ticker Tape */}
+      <div 
+        ref={el => { metaRefs.current[3] = el; }}
+        className="absolute bottom-0 w-full brutal-border-t bg-foreground text-background py-2 overflow-hidden z-20 flex"
+      >
+        <div className="flex whitespace-nowrap animate-marquee">
+          <span className="font-display text-xl md:text-2xl tracking-widest px-4">{stackTicker}</span>
+          <span className="font-display text-xl md:text-2xl tracking-widest px-4">{stackTicker}</span>
+        </div>
       </div>
     </section>
   );

@@ -31,7 +31,7 @@ export default function RootLayout({
       lang="en"
       className={`${anton.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-accent selection:text-black">
+      <body className="min-h-full flex flex-col font-sans bg-background bg-grid text-foreground selection:bg-accent selection:text-black">
         <CustomCursor />
         <PageTransition>{children}</PageTransition>
       </body>
